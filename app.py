@@ -152,8 +152,10 @@ def filter_combinations_by_circle_intersection(points, R, comb_size):
 
 
 def main():
+    st.title("Simplicial Complex Visualization")
+
     R = st.sidebar.slider("Filtration parameter", 0.1, 5.0, 0.5)
-    mode = st.sidebar.selectbox("Draw Mode", ["Vietoris-Rips", "Čech"])
+    mode = st.sidebar.selectbox("Simplicial Complex", ["Vietoris-Rips", "Čech"])
 
     # Generate a default set of points that lie roughly on the vertices of a cube with some noise
     default_points = np.array(
