@@ -5,6 +5,38 @@ from itertools import combinations
 import ast
 
 
+def draw_spheres(fig, centers, R):
+    """Draw spheres around points using Mesh3d."""
+    for x, y, z in centers:
+        phi = np.linspace(0, 2 * np.pi, 30)
+        theta = np.linspace(0, np.pi, 30)
+        phi, theta = np.meshgrid(phi, theta)
+
+        x_sphere = R * np.sin(theta) * np.cos(phi) + x
+        y_sphere = R * np.sin(theta) * np.sin(phi) + y
+        z_sphere = R * np.cos(theta) + z
+
+        i, j, k = [], [], []
+        for u in range(0, 29):
+            for v in range(0, 29):
+                i.append(u * 30 + v)
+                j.append((u + 1) * 30 + v)
+                k.append(u * 30 + v + 1)
+
+        fig.add_trace(
+            go.Mesh3d(
+                x=x_sphere.flatten(),
+                y=y_sphere.flatten(),
+                z=z_sphere.flatten(),
+                i=i,
+                j=j,
+                k=k,
+                opacity=0.3,
+                color="#808080",
+            )
+        )
+
+
 def distance(p1, p2):
     """Calculate Euclidean distance between two points in 3D space."""
     return np.linalg.norm(np.array(p1) - np.array(p2))
@@ -152,6 +184,8 @@ def main():
         st.sidebar.warning("Invalid input. Make sure to enter a valid list of points.")
         return
 
+    draw_balls = st.sidebar.checkbox("Draw Balls around Points", False)
+
     # Initialize figure
     fig = go.Figure()
 
@@ -233,6 +267,9 @@ def main():
                 color="#FF69B4",
             )
         )
+
+    if draw_balls:
+        draw_spheres(fig, centers, R)  # Step 2: Draw spheres if option is enabled
 
     # Update layout and show the figure in Streamlit
     fig.update_layout(
